@@ -6,7 +6,7 @@
 /*   By: ojing-ha <ojing-ha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 19:13:39 by ojing-ha          #+#    #+#             */
-/*   Updated: 2022/08/02 21:30:33 by ojing-ha         ###   ########.fr       */
+/*   Updated: 2022/08/03 15:49:08 by ojing-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 
 void	gnl_strlen(char *str1, char *str2, t_info *info)
 {
+	int	readwc;
+
+	readwc = info->readwc;
 	if (str1)
 	{
 		while (*str1 != '\0')
@@ -22,7 +25,7 @@ void	gnl_strlen(char *str1, char *str2, t_info *info)
 			info->wc1++;
 		}	
 	}
-	while (*str2 != '\0' && *str2 != '\n')
+	while (--readwc >= 0 && *str2 != '\n')
 	{
 		str2++;
 		info->wc2++;
@@ -31,17 +34,17 @@ void	gnl_strlen(char *str1, char *str2, t_info *info)
 		info->wc2++;
 }
 
-void	gnl_strcopy(char *str, t_info *info, int len)
+void	gnl_strcopy(char *str, char *bufferstr, int len)
 {
-	while (*str != '\0' && --len>= 0)
+	while (*str != '\0' && --len >= 0)
 	{	
-		*info->bufferstr = *str;
-		info->bufferstr++;
+		*bufferstr = *str;
+		bufferstr++;
 		str++;
 	}
 }
 
-void	gnl_strjoin(char *buffer, t_info *info)
+char	*gnl_strjoin(char *buffer, t_info *info)
 {
 	char	*init_ptr;
 
@@ -49,17 +52,42 @@ void	gnl_strjoin(char *buffer, t_info *info)
 	if (info->wc1 == 0)
 	{
 		info->bufferstr = malloc(sizeof(char) * (info->wc2 + 1));
+		info->bufferstr[info->wc2] = '\0';
 		init_ptr = info->bufferstr;
-		gnl_strcopy(buffer, info, info->wc1);
+		gnl_strcopy(buffer, info->bufferstr, info->wc2);
+		gnl_nextline(buffer, info);
 		info->finalstr = init_ptr;
-		free(init_ptr);
-		return ;
+		return (info->finalstr);
 	}
 	info->bufferstr = malloc(sizeof(char) * (info->wc1 + info->wc2 + 1));
+	info->bufferstr[info->wc1 + info->wc2] = '\0';
 	init_ptr = info->bufferstr;
-	gnl_strcopy(info->finalstr, info, info->wc1);
-	// free(info->finalstr);
-	gnl_strcopy(buffer, info, info->wc2);
-	*info->bufferstr = '\0';
+	gnl_strcopy(info->finalstr, info->bufferstr, info->wc1);
+	gnl_strcopy(buffer, &info->bufferstr[info->wc1], info->wc2);
+	gnl_nextline(buffer, info);
 	info->finalstr = init_ptr;
+	return (info->finalstr);
+}
+
+void	gnl_nextline(char *buffer, t_info *info)
+{
+	int	wc;
+
+	wc = info->wc2;
+	if (info->readwc != info->wc2)
+	{
+		while (--wc >= 0)
+			buffer++;
+		info->wc2 = info->readwc - info->wc2;
+		info->nextstr = malloc(sizeof(char) * (info->wc2 + 1));
+		info->nextstr[info->wc2] = '\0';
+		gnl_strcopy(buffer, info->nextstr, info->wc2);
+	}
+}
+
+void	gnl_initialize(t_info *info)
+{
+	info->wc1 = 0;
+	info->wc2 = 0;
+	info->readwc = 1;
 }
