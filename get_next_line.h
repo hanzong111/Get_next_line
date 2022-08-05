@@ -6,7 +6,7 @@
 /*   By: ojing-ha <ojing-ha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/01 20:44:20 by ojing-ha          #+#    #+#             */
-/*   Updated: 2022/08/03 14:23:47 by ojing-ha         ###   ########.fr       */
+/*   Updated: 2022/08/05 20:26:15 by ojing-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,6 @@
 typedef struct s_info
 {
 	char	*finalstr;
-	char	*nextstr;
-	char	*buffer;
 	char	*bufferstr;
 	int		wc1;
 	int		wc2;
@@ -34,9 +32,11 @@ typedef struct s_info
 
 char	*get_next_line(int fd);
 void	gnl_strlen(char *str1, char *str2, t_info *info);
-char	*gnl_strjoin(char *buffer, t_info *info);
-void	gnl_strcopy(char *str, char *bufferstr, int len);
-void	gnl_initialize(t_info *info);
-void	gnl_nextline(char *buffer, t_info *info);
+void	gnl_strjoin(char *buffer, t_info *info);
+void	gnl_strcopy(char *str, char *bufferstr, int len, int type);
+char	*gnl_strdup(char *newstr, int type);
+char	*gnl_finalstr(int fd, char *buffer, t_info *info);
+int		gnl_checks(char *buffer);
+char	*gnl_strsort(char *buffer, t_info *info);
 
 #endif
