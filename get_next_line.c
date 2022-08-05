@@ -6,7 +6,7 @@
 /*   By: ojing-ha <ojing-ha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/04 16:53:05 by ojing-ha          #+#    #+#             */
-/*   Updated: 2022/08/05 20:43:42 by ojing-ha         ###   ########.fr       */
+/*   Updated: 2022/08/05 21:10:23 by ojing-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,14 @@ char	*gnl_strsort(char *buffer, t_info *info)
 	}
 }
 
+void	gnl_seperate(char *buffer, t_info *info)
+{
+	while (*buffer != '\n')
+		buffer++;
+	buffer++;
+	info->finalstr = gnl_strdup(buffer, 2);
+}
+
 char	*get_next_line(int fd)
 {
 	static char	*arry[1024];
@@ -65,9 +73,11 @@ char	*get_next_line(int fd)
 		free(info.finalstr);
 		if(gnl_checks(arry[fd]))
 		{
-			// gnl_seperate(arry[fd]);
+			gnl_seperate(arry[fd], &info);
+			free(arry[fd]);
 			gnl_finalstr(fd, buffer, &info);
 			arry[fd] = gnl_strsort(buffer, &info);
+			free(buffer);
 			return (info.finalstr);
 		}
 		else
@@ -82,7 +92,6 @@ char	*get_next_line(int fd)
 	}
 	gnl_finalstr(fd, buffer, &info);
 	arry[fd] = gnl_strsort(buffer, &info);
-	printf("Next line is %s\n", arry[fd]);
 	free(buffer);
 	return (info.finalstr);
 }

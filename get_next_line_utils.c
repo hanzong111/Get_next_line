@@ -6,7 +6,7 @@
 /*   By: ojing-ha <ojing-ha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 16:39:11 by ojing-ha          #+#    #+#             */
-/*   Updated: 2022/08/05 20:42:24 by ojing-ha         ###   ########.fr       */
+/*   Updated: 2022/08/05 20:55:24 by ojing-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,6 @@ void	gnl_strjoin(char *buffer, t_info *info)
 		firststr[info->wc2] = '\0';
 		gnl_strcopy(buffer, firststr, info->wc2, 1);
 		info->finalstr = firststr;
-		printf("Finalstr is %s\n", info->finalstr);
 		return ;
 	}
 	newstr = malloc(sizeof(char) * (info->wc1 + info->wc2 + 1));
@@ -99,7 +98,6 @@ void	gnl_strjoin(char *buffer, t_info *info)
 	gnl_strcopy(buffer, &newstr[info->wc1], info->wc2, 1);
 	free(init_ptr);
 	info->finalstr = gnl_strdup(newstr, 2);
-	printf("Finalstr is %s\n", info->finalstr);
 	free(newstr);
 }
 
