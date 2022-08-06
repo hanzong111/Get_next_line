@@ -6,7 +6,7 @@
 /*   By: ojing-ha <ojing-ha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/04 16:53:05 by ojing-ha          #+#    #+#             */
-/*   Updated: 2022/08/05 21:10:23 by ojing-ha         ###   ########.fr       */
+/*   Updated: 2022/08/06 14:00:43 by ojing-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,15 @@
 
 int	gnl_checks(char *buffer)
 {
-	while (*buffer != '\0')
+	if (buffer != NULL)
 	{
-		if (*buffer == '\n')
-			return (1);
-		else
-			buffer++;
+		while (*buffer != '\0')
+		{
+			if (*buffer == '\n')
+				return (1);
+			else
+				buffer++;
+		}
 	}
 	return (0);
 }
@@ -29,18 +32,24 @@ char	*gnl_strsort(char *buffer, t_info *info)
 	char	*nextstr;
 	int		wc;
 	int		i;
+	int		readwc;
 
 	wc = 0;
 	i = 0;
-	while (*buffer != '\n' && --info->readwc >= 0)
+	readwc = info->readwc;
+	while (*buffer != '\n' && --readwc >= 0)
 		buffer++;
-	if (info->readwc == 0)
+	if (info->readwc == 0 && !info->finalstr)
+	{
+		free(info->finalstr);
+		info->finalstr = NULL;
 		return (NULL);
+	}
 	else
 	{
 		buffer++;
-		info->readwc--;
-		while (buffer[i++] != '\0' && --info->readwc >= 0)
+		readwc--;
+		while (buffer[i++] != '\0' && --readwc >= 0)
 			wc++;
 		nextstr = malloc(sizeof(char) * (wc + 1));
 		nextstr[wc] = '\0';
@@ -51,6 +60,11 @@ char	*gnl_strsort(char *buffer, t_info *info)
 
 void	gnl_seperate(char *buffer, t_info *info)
 {
+	// if (buffer == NULL)
+	// {
+	// 	info->finalstr = NULL;
+	// 	return ;
+	// }
 	while (*buffer != '\n')
 		buffer++;
 	buffer++;
@@ -73,25 +87,29 @@ char	*get_next_line(int fd)
 		free(info.finalstr);
 		if(gnl_checks(arry[fd]))
 		{
+			printf("1\n");
 			gnl_seperate(arry[fd], &info);
 			free(arry[fd]);
 			gnl_finalstr(fd, buffer, &info);
 			arry[fd] = gnl_strsort(buffer, &info);
-			free(buffer);
+			buffer = NULL;
 			return (info.finalstr);
 		}
 		else
 		{
+			printf("2\n");
 			info.finalstr = gnl_strdup(arry[fd], 2);
 			free(arry[fd]);
 			gnl_finalstr(fd, buffer, &info);
 			arry[fd] = gnl_strsort(buffer, &info);
 			free(buffer);
+			buffer = NULL;
 			return (info.finalstr);
 		}
 	}
 	gnl_finalstr(fd, buffer, &info);
 	arry[fd] = gnl_strsort(buffer, &info);
 	free(buffer);
+	buffer = NULL;
 	return (info.finalstr);
 }

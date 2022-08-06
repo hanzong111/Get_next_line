@@ -6,7 +6,7 @@
 /*   By: ojing-ha <ojing-ha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 16:39:11 by ojing-ha          #+#    #+#             */
-/*   Updated: 2022/08/05 20:55:24 by ojing-ha         ###   ########.fr       */
+/*   Updated: 2022/08/06 13:59:43 by ojing-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,8 @@ char	*gnl_strdup(char *newstr, int type)
 
 	wc = 0;
 	i = -1;
+	if (newstr == NULL || *newstr == '\0')
+		return(NULL);
 	while (newstr[++i] != '\0')
 		wc++;
 	finalstr = malloc(sizeof(char) * (wc + 1));
