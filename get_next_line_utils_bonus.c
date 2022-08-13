@@ -6,12 +6,15 @@
 /*   By: ojing-ha <ojing-ha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 16:39:11 by ojing-ha          #+#    #+#             */
-/*   Updated: 2022/08/12 18:48:57 by ojing-ha         ###   ########.fr       */
+/*   Updated: 2022/08/13 22:23:01 by ojing-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+/*	To Count string length of str1 & str2 to get the malloc length	*/
+/*	word count of str1 is stored in info->wc1						*/
+/*	Word count of str2 is stored in info->wc2						*/
 void	gnl_strlen(char *str1, char *str2, t_info *info)
 {
 	int	readwc;
@@ -60,6 +63,7 @@ void	gnl_strcopy(char *buffer, char *newstr, int len, int type)
 	}
 }
 
+/*	To make a complete duplicate of a string	*/
 char	*gnl_strdup(char *newstr, int type)
 {
 	int		i;
@@ -78,6 +82,7 @@ char	*gnl_strdup(char *newstr, int type)
 	return (finalstr);
 }
 
+/*	To join str1 & str2 together , to form a finalstr	*/
 void	gnl_strjoin(char *buffer, t_info *info)
 {
 	char	*firststr;
@@ -103,9 +108,12 @@ void	gnl_strjoin(char *buffer, t_info *info)
 	free(newstr);
 }
 
+/*	To read a line in a file , and generate a copy of that line	*/
+/*	Storing the final produced string inside of info->finalstr	*/
 char	*gnl_finalstr(int fd, char *buffer, t_info *info)
 {
-	while ((info->readwc = read(fd, buffer, BUFFER_SIZE)) > 0)
+	info->readwc = read(fd, buffer, BUFFER_SIZE);
+	while (info->readwc > 0)
 	{
 		if (gnl_checks(buffer))
 		{
@@ -113,6 +121,7 @@ char	*gnl_finalstr(int fd, char *buffer, t_info *info)
 			return (info->finalstr);
 		}
 		gnl_strjoin(buffer, info);
+		info->readwc = read(fd, buffer, BUFFER_SIZE);
 	}
 	return (info->finalstr);
 }

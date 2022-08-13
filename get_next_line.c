@@ -6,12 +6,13 @@
 /*   By: ojing-ha <ojing-ha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/04 16:53:05 by ojing-ha          #+#    #+#             */
-/*   Updated: 2022/08/12 18:46:23 by ojing-ha         ###   ########.fr       */
+/*   Updated: 2022/08/13 22:18:32 by ojing-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+/*	To Check if there is a '\n' in a string */
 int	gnl_checks(char *buffer)
 {
 	if (buffer != NULL)
@@ -27,15 +28,14 @@ int	gnl_checks(char *buffer)
 	return (0);
 }
 
+/*	To save remainder string behind the '\n' in the buffer */
 char	*gnl_strsort(char *buffer, t_info *info)
 {
 	char	*nextstr;
-	int		wc;
-	int		i;
 	int		readwc;
 
-	wc = 0;
-	i = 0;
+	info->wc = 0;
+	info->index = 0;
 	readwc = info->readwc;
 	while (*buffer != '\n' && --readwc >= 0)
 		buffer++;
@@ -49,45 +49,69 @@ char	*gnl_strsort(char *buffer, t_info *info)
 	{
 		buffer++;
 		readwc--;
-		while (buffer[i++] != '\0' && --readwc >= 0)
-			wc++;
-		nextstr = malloc(sizeof(char) * (wc + 1));
-		nextstr[wc] = '\0';
-		gnl_strcopy(buffer, nextstr, wc, 2);
+		while (buffer[info->index++] != '\0' && --readwc >= 0)
+			info->wc++;
+		nextstr = malloc(sizeof(char) * (info->wc + 1));
+		nextstr[info->wc] = '\0';
+		gnl_strcopy(buffer, nextstr, info->wc, 2);
 		return (nextstr);
 	}
 }
 
-void	gnl_seperate(char *buffer, t_info *info)
+/*	To Extract "finalstring" from "arry[fd]" 		 */
+/*	Then store the remainder string in info->nextstr */
+void	gnl_extract(char *buffer, t_info *info)
 {
-	int		wc;
-	int		i;
-
-	i = 0;
-	wc = 0;
-	while (buffer[wc] != '\n')
-		wc++;
-	wc++;
-	info->finalstr = malloc(sizeof(char) * (wc + 1));
-	info->finalstr[wc] = '\0';
-	while (--wc >= 0)
+	info->index = 0;
+	info->wc = 0;
+	while (buffer[info->wc] != '\n')
+		info->wc++;
+	info->wc++;
+	info->finalstr = malloc(sizeof(char) * (info->wc + 1));
+	info->finalstr[info->wc] = '\0';
+	while (--info->wc >= 0)
 	{
-		info->finalstr[i] = buffer[i];
-		i++;
+		info->finalstr[info->index] = buffer[info->index];
+		info->index++;
 	}
-	if (buffer[i])
+	if (buffer[info->index])
 	{
-		info->nextstr = gnl_strdup(&buffer[i], 2);
+		info->nextstr = gnl_strdup(&buffer[info->index], 2);
 		free(buffer);
 		return ;
 	}
-	if (!buffer[i])
+	info->nextstr = NULL;
+	free(buffer);
+}
+
+/*	First looks into the nextstr stored inside arry[fd],		*/
+/*	Checks if there is a '\n' present in the nexstr.			*/
+/*																*/
+/*	IF '\n' IS PRESENT INSIDE OF ARRY[FD]						*/
+/*	Use gnl_extract() to get the finalstr						*/
+/*																*/
+/*	IF '\n' IS NOT PRESENT INSIDE OF ARRY[FD]					*/
+/*	Make a duplicate of arry[fd] and store it in				*/
+/*	info->finalstr as this is also the start of a new string	*/
+void	gnl_extract_and_join(int fd, char **arry, t_info *info, char *buffer)
+{
+	if (gnl_checks(arry[fd]))
 	{
-		info->nextstr = NULL;
+		gnl_extract(arry[fd], info);
+		arry[fd] = info->nextstr;
+		free(buffer);
+	}
+	else
+	{
+		info->finalstr = gnl_strdup(arry[fd], 2);
+		free(arry[fd]);
+		gnl_finalstr(fd, buffer, info);
+		arry[fd] = gnl_strsort(buffer, info);
 		free(buffer);
 	}
 }
 
+/*	Get . Next . Line .	*/
 char	*get_next_line(int fd)
 {
 	static char	*arry[1024];
@@ -102,22 +126,8 @@ char	*get_next_line(int fd)
 	if (arry[fd])
 	{
 		free(info.finalstr);
-		if (gnl_checks(arry[fd]))
-		{
-			gnl_seperate(arry[fd], &info);
-			arry[fd] = info.nextstr;
-			free(buffer);
-			return (info.finalstr);
-		}
-		else
-		{
-			info.finalstr = gnl_strdup(arry[fd], 2);
-			free(arry[fd]);
-			gnl_finalstr(fd, buffer, &info);
-			arry[fd] = gnl_strsort(buffer, &info);
-			free(buffer);
-			return (info.finalstr);
-		}
+		gnl_extract_and_join(fd, arry, &info, buffer);
+		return (info.finalstr);
 	}
 	gnl_finalstr(fd, buffer, &info);
 	arry[fd] = gnl_strsort(buffer, &info);
