@@ -6,7 +6,7 @@
 /*   By: ojing-ha <ojing-ha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/04 17:16:38 by ojing-ha          #+#    #+#             */
-/*   Updated: 2022/08/07 03:18:31 by ojing-ha         ###   ########.fr       */
+/*   Updated: 2022/08/22 13:23:32 by ojing-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int     main(void)
     // int     fd2 = fileno(fp2);
 	char	*str;
 
-	str = get_next_line(fd);
+	str = get_next_line(1006);
 	printf("Line 1 is %s\n", str);
 	free(str);
 	// str = get_next_line(fd2);
@@ -32,7 +32,8 @@ int     main(void)
 	str = get_next_line(fd);
 	printf("Line 2 is %s\n", str);
 	free(str);
-	str = get_next_line(fd);
+	close(fd);
+	str = get_next_line(1007);
 	printf("Line 3 is %s\n", str);
 	free(str);
 	str = get_next_line(fd);
@@ -41,5 +42,9 @@ int     main(void)
 	// str = get_next_line(fd2);
 	// printf("After everything the Finalstr is %s\n", str);
 	// free(str);
+	str = get_next_line(1000000);
+	printf("Invalid fd is %s\n", str);
+	free(str);
+
     return (0);
 }

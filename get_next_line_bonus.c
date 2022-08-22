@@ -6,7 +6,7 @@
 /*   By: ojing-ha <ojing-ha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/04 16:53:05 by ojing-ha          #+#    #+#             */
-/*   Updated: 2022/08/13 22:22:56 by ojing-ha         ###   ########.fr       */
+/*   Updated: 2022/08/22 13:44:06 by ojing-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,11 @@ char	*get_next_line(int fd)
 		return (info.finalstr);
 	}
 	gnl_finalstr(fd, buffer, &info);
+	if (info.readwc < 0)
+	{
+		free(buffer);
+		return (NULL);
+	}
 	arry[fd] = gnl_strsort(buffer, &info);
 	free(buffer);
 	return (info.finalstr);
