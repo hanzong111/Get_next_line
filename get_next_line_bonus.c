@@ -6,11 +6,11 @@
 /*   By: ojing-ha <ojing-ha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/04 16:53:05 by ojing-ha          #+#    #+#             */
-/*   Updated: 2022/08/22 13:44:06 by ojing-ha         ###   ########.fr       */
+/*   Updated: 2022/08/22 16:05:58 by ojing-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 /*	To Check if there is a '\n' in a string */
 int	gnl_checks(char *buffer)

@@ -6,11 +6,11 @@
 /*   By: ojing-ha <ojing-ha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 16:39:11 by ojing-ha          #+#    #+#             */
-/*   Updated: 2022/08/13 22:23:01 by ojing-ha         ###   ########.fr       */
+/*   Updated: 2022/08/22 16:06:51 by ojing-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 /*	To Count string length of str1 & str2 to get the malloc length	*/
 /*	word count of str1 is stored in info->wc1						*/
